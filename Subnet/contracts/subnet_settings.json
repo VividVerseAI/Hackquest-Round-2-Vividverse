@@ -1,0 +1,47 @@
+{
+  "_comment": "Single source of truth for all subnet settings. Edit here; validator and platform both read this file. No restart needed — validator reloads each step, platform reads fresh on each request.",
+
+  "submissionWindowSec": 600,
+  "evaluationWindowSec": 600,
+  "promptVotingWindowSec": 600,
+  "minerCountForCountdown": 2,
+  "minVotedMinersForCountdown": 2,
+
+  "qualityThreshold": 75.0,
+
+  "_emissionSplitComment": "Winner vs qualifying non-winners pool; must sum to 1.0. Loaded by incentive.py and platform read-config.",
+  "winnerShare": 0.7,
+  "proportionalShare": 0.3,
+
+  "subnetNetuid": 210,
+
+  "criticOwnerPoolShare": 0.5,
+  "criticRewardEligibilityThreshold": 75,
+  "topCriticPoolShare": 0.7,
+  "criticQuorumMin": 4,
+  "_criticPoolComment": "maxCriticsPerValidator caps pool size per validator. criticScoreClipThreshold clips outlier critic scores before median (Yuma-inspired); only applies at 3+ critics in the pool.",
+  "maxCriticsPerValidator": 15,
+  "criticScoreClipThreshold": 20,
+  "criticMinPoolSizeForScoring": 5,
+  "criticMinPoolSizeEnabled": false,
+
+  "phaseTransitionQuorum": 1,
+  "finalisationQuorum": 1,
+  "promptVotingQuorumRatio": 0.5,
+  "validatorConsensusQuorumRatio": 0.67,
+
+  "_criteriaComment": "Screening criteria weights (0–1, must sum to 1.0). Changing these requires a platform deploy — client display and server scoring both read from here.",
+  "criterionWeightNarrativeCoherence": 0.25,
+  "criterionWeightNarrativeProgression": 0.20,
+  "criterionWeightEmotionalImpact": 0.15,
+  "criterionWeightOriginality": 0.10,
+  "criterionWeightCraftRefinement": 0.10,
+  "criterionWeightContinuityIntegration": 0.10,
+  "criterionWeightThematicResonance": 0.10,
+
+  "criticReputationEmaAlpha": 0.15,
+  "criticReputationNeutralEma": 50,
+  "criticReputationFactorMin": 0.9,
+  "criticReputationFactorDefault": 1.0,
+  "criticReputationFactorMax": 1.1
+}

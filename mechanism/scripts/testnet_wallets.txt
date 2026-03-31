@@ -1,0 +1,148 @@
+======================================================================
+  VIVIDVERSE TESTNET WALLETS
+======================================================================
+
+┌─ [CRITIC]  critic1
+│  Coldkey SS58 : 5GxYC5LHApXxUVTQShzEkNDR56DkTxP9VeoQNEiuoUyRzJTF
+│  Coldkey mnemonic : toddler mind twelve drill skirt noise frequent jewel shock butter success bean
+│
+│  ── hotkey: critic1_hotkey
+│     SS58     : 5FHT7HPVGyMEfa4Jgzgf8SEMWrWT422uKGsbVS8zVcPvkv8o
+│     mnemonic : asset winter display mansion float dirt argue trash outside left advance spirit
+└────────────────────────────────────────────────────────────
+
+┌─ [CRITIC]  critic2
+│  Coldkey SS58 : 5FWyUptY5AcmsZJvxNXUMSmZ3BGvYCqXThp2fUzbaejokwho
+│  Coldkey mnemonic : resemble economy fiction clown skull lens now list tool sketch city silk
+│
+│  ── hotkey: critic2_hotkey
+│     SS58     : 5CrRgLaDP4ERGyi6BBLApHmbfyy9Kavuk2D6Wos8x2R3Av2F
+│     mnemonic : clever quality anxiety wing audit ribbon build tree grid strike swing badge
+└────────────────────────────────────────────────────────────
+
+┌─ [CRITIC]  critic3
+│  Coldkey SS58 : 5H3mrnyuXC5rEVF1CsA7UyAmN1Xy6MkvwW8j2RnD5rBCcEky
+│  Coldkey mnemonic : wall much drop extend eternal report describe cricket key amount plate accident
+│
+│  ── hotkey: critic3_hotkey
+│     SS58     : 5GenEKu2MD3m3xZz5rQ2qSyKN1BCL9hY8qWzQDqXx2L4KEDY
+│     mnemonic : tragic stay uncle tired silly burger same avocado remove tape duty define
+└────────────────────────────────────────────────────────────
+
+┌─ [CRITIC]  critic4
+│  Coldkey SS58 : 5EPa3xDfba6M3ZZ9qvBsn3AsekrhjbpvgAKieGpQJoMfAoeQ
+│  Coldkey mnemonic : own velvet all push chapter suspect pet quick mesh use extra across
+│
+│  ── hotkey: critic4_hotkey
+│     SS58     : 5DUWAvK14o2XuR357VrksQV7uv7KMo8Eb17YH6vgsRkQgMzK
+│     mnemonic : hint twin disorder waste behind dizzy split jealous eager cigar funny bread
+└────────────────────────────────────────────────────────────
+
+┌─ [CRITIC]  critic5
+│  Coldkey SS58 : 5HmZLetWgbUAr5LaHGqnAzpCLpCakQhP7bTMbXaU9e45CGJy
+│  Coldkey mnemonic : minute chest rifle mesh animal stand later hand win power claim rent
+│
+│  ── hotkey: default
+│     SS58     : 5CyCxkTWJ17KHNdHLDrVK284vzQ142HwQxwxRUCjJSevKyFz
+│     mnemonic : road coffee cat disorder lesson rose dwarf veteran fire inquiry current mutual
+└────────────────────────────────────────────────────────────
+
+┌─ [CRITIC]  critic6
+│  Coldkey SS58 : 5FxrMR4Qq7hZaJemv6GXmyfXdbi3kyK8HhWrPJVrxAy7s21J
+│  Coldkey mnemonic : season extra say head until garage mad boost pair motion define snap
+│
+│  ── hotkey: default
+│     SS58     : 5DALfMaToM4iP4hCAc67kVW5s8keEWGoaMX65vcG7pAXGtgQ
+│     mnemonic : response blind print mosquito razor subject female oyster album year surge crime
+└────────────────────────────────────────────────────────────
+
+┌─ [MINER]  miner
+│  Coldkey SS58 : 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms
+│  Coldkey mnemonic : table duck jar ship alert uncle large busy air churn remain blur
+│
+│  ── hotkey: hotkey1
+│     SS58     : 5Fk92bfzoV5fYrEY4AVycdeg3mUNDE6h88W1WF5gjbZWveUa
+│     mnemonic : amateur leaf rely lamp unfair child marine budget merit square floor nest
+│
+│  ── hotkey: hotkey2
+│     SS58     : 5FxrPr1XYJDivpihzPLgCDL6m2ThUMnnsbPrRKBCazcMNB4Z
+│     mnemonic : match room minute talent lyrics extend velvet opinion taste near tobacco area
+│
+│  ── hotkey: hotkey3
+│     SS58     : 5C8TKtHpZx7TeP4jUDqBW63JmoAwTD7fPgaa91foUtQoYeP1
+│     mnemonic : naive bread mansion swing helmet zebra wife test diagram obscure grass column
+│
+│  ── hotkey: hotkey4
+│     SS58     : 5HEqhxMu1KSpjoVU4ZmR2hEm1GYfcDKhwsRt8iWVW7qKYwtd
+│     mnemonic : insane wet rain margin myself iron reason shuffle popular range bachelor artwork
+│
+│  ── hotkey: hotkey5
+│     SS58     : 5CM4NbW6SqQAXH3motBvnoRo2ApbJtCGfmF8yD2YiAK97sMz
+│     mnemonic : parent just boat rapid finger base invite waste agree divorce tube later
+│
+│  ── hotkey: hotkey6
+│     SS58     : 5EJV4HfTRZcosnBpKsjfhwopdzdzhe19LRhsxZgVHbpU9hwp
+│     mnemonic : next riot trim require state problem blur trip wear verb price ill
+│
+│  ── hotkey: hotkey7
+│     SS58     : 5ChqbcaDqfUAQiiWCd9SHwzKuJSHcqEgba7GKmFsFXqomS7h
+│     mnemonic : double praise lift typical unaware zero shrug wrong ranch aerobic bind recall
+└────────────────────────────────────────────────────────────
+
+┌─ [MINER]  miner1
+│  Coldkey SS58 : 5Do2yeyhoZWuNWfAF7ed7AToAPvRoEffr5Z4xmVjqd3riNFt
+│  Coldkey mnemonic : because coach chair current employ escape urge sniff middle hunt behave buffalo
+│
+│  ── hotkey: hotkey2
+│     SS58     : 5DydK1ucRHzsBFFvUinqsuWeM1HPtwoEqT1eMtYGwrjgwmMf
+│     mnemonic : hybrid fitness involve sting endorse science defy curve solar host box arrange
+└────────────────────────────────────────────────────────────
+
+┌─ [MINER]  miner2
+│  Coldkey SS58 : 5G6oEypxhHU8KLfj6Db8687BcF3ZcoVwqe7HAtzZQ6he5YHh
+│  Coldkey mnemonic : donor patch planet bottom shield hire online trim save wear any bottom
+│
+│  ── hotkey: hotkey1
+│     SS58     : 5DyVxaG76XRvS2pwgB8DtoBR7176Gi6owucvJgrSdC1Rb2d3
+│     mnemonic : eyebrow tennis phone remind hen face reason giggle abandon dose chase stick
+│
+│  ── hotkey: hotkey2
+│     SS58     : 5EBzeWK9Kgx4jsfPXPbfLaHGcRG8bgPsGPLYPnTQxeAp3mYT
+│     mnemonic : convince head obey crisp fossil thrive diary online immune seek quick believe
+│
+│  ── hotkey: hotkey3
+│     SS58     : 5GgHrFaBenWitZL851V7sjSQmXQavmk1arNtg9x7ztJWtpwF
+│     mnemonic : exist live clean rotate skin expect toe merit pill offer empty spirit
+│
+│  ── hotkey: hotkey4
+│     SS58     : 5Da3j8cudijDVE2nvzasmoqisjAGTUre9A6zMJyXsk4HDyBv
+│     mnemonic : orange govern enough network excite maze boil dream case task imitate trumpet
+└────────────────────────────────────────────────────────────
+
+┌─ [UNKNOWN]  testnetwallet
+│  Coldkey SS58 : 5FHR1DqFdWnTL9754CiC5dRqWo1ctaJrxeJsTBigdq8FQ3NU
+│  Coldkey mnemonic : pitch breeze equal buddy zebra narrow fame ritual guess foot ahead hire
+│
+│  ── hotkey: hotkey1
+│     SS58     : 5G4f6JH8prntQG8WQRygJ2azF8YnkeDzPc2SvZm71KwK3kkg
+│     mnemonic : traffic tragic ball indoor resource square comic odor grief leg cousin rival
+└────────────────────────────────────────────────────────────
+
+┌─ [VALIDATOR]  validator
+│  Coldkey SS58 : 5D7tp3Mabe5ALxtDZNLzWdLdCGrW4moGwE1xyosjBgBNCJit
+│  Coldkey mnemonic : betray post spirit wisdom parrot clever inner old similar whale business buffalo
+│
+│  ── hotkey: hotkey1
+│     SS58     : 5Fvao11HgJ2rixMDT1dYRSeerngPgDRV6vGMnjuapFWhxGiS
+│     mnemonic : quote time ribbon sample figure deal pact exchange east delay clever dinner
+│
+│  ── hotkey: hotkey2
+│     SS58     : 5E1o8RgzY7shG63QvNpa6GGwaoRmLWLMWmz2Am4XnRU7oUdN
+│     mnemonic : connect typical symptom odor cotton company any street heavy please mean winter
+│
+│  ── hotkey: hotkey3
+│     SS58     : 5CCpnR8xWxBQNLZ7KjVvjC9EWHD2SXPHUkg4pDQAMC7oy2YN
+│     mnemonic : rib window silent lock betray cancel swear sea process chef learn suit
+└────────────────────────────────────────────────────────────
+
+======================================================================
