@@ -10,31 +10,40 @@
 
 ---
 
-## Install
+## Running the Validator
+
+**Requires Docker only** — no Python environment, no btcli, no wallet setup needed.
 
 ```bash
-# From the repo root:
-pip install -e .
-pip install -r mechanism/requirements.txt
+git clone https://github.com/VividVerseAI/Hackquest-Round-2-Vividverse.git
+cd Hackquest-Round-2-Vividverse
+docker build -t vividverse-validator .
+docker run vividverse-validator
 ```
 
-`pip install -e .` maps `import vividverse` to the `Subnet/` directory. Must be run from the repo root (where `setup.py` is). Then install the remaining requirements from `mechanism/`.
+This runs **Validator 1** (miner/hotkey3) by default. To run **Validator 2** instead:
+
+```bash
+docker run -e WALLET_HOTKEY=hotkey1 vividverse-validator
+```
+
+The Docker image handles everything: installs all dependencies, pre-bakes the testnet wallets, and connects to the platform at https://staging.vividverse.ai automatically.
 
 ---
 
 ## Signing In to the Platform
 
-The platform uses hotkey-based authentication. Since the wallets are Bittensor (btcli) wallets — not Polkadot.js/Talisman — use `scripts/sign_challenge.py` to sign in.
+The platform uses hotkey-based authentication. Since these are Bittensor wallets (not Polkadot.js/Talisman), use `scripts/sign_challenge.py` to sign in — or import the mnemonic phrases from `mechanism/scripts/testnet_wallets.txt` into Talisman/Polkadot.js directly (these wallets support Substrate).
 
 ### Step 1 — Go to the platform and enter your hotkey
 
 1. Go to https://staging.vividverse.ai and click **Sign In**
-2. Click **"Sign in with hotkey - no account setup is needed, an account is created when signing up using a registered hotkey"**
+2. Click **"Already linked a hotkey? Sign in by verifying it"**
 3. Enter the validator hotkey SS58 address (see credentials below) and click **Continue**
 
 ### Step 2 — Copy the challenge message
 
-The platform displays a challenge message. Click **"Copy message"** or copy the full text manually. It will look something like:
+The platform displays a challenge message. Click **"Copy message"** or copy the full text manually. It looks like:
 
 ```
 Vividverse hot key verification
@@ -46,9 +55,9 @@ Issued: <timestamp>
 Expires: <timestamp>
 ```
 
-### Step 3 — Sign it with sign_challenge.py OR (simpler) with Talisman/polkadot.js wallet by importing them using neumonic phrase in scripts/testnet_wallets.txt - these wallets support substrate.
+### Step 3 — Sign it
 
-From the `mechanism/` directory, run:
+**Option A — sign_challenge.py** (from the `mechanism/` directory after `pip install -r requirements.txt`):
 
 ```bash
 python3 scripts/sign_challenge.py -m "PASTE_FULL_MESSAGE_HERE" \
@@ -56,9 +65,9 @@ python3 scripts/sign_challenge.py -m "PASTE_FULL_MESSAGE_HERE" \
   --wallet.hotkey hotkey3
 ```
 
-Replace `hotkey3` with the hotkey label for the validator you are signing in as (see credentials below). The script prints a `0x...` hex signature.
+Replace `hotkey3` with the hotkey label for the validator you are signing in as. The script prints a `0x...` hex signature.
 
-> **Note:** The wallets are pre-loaded on the cloud validator. To sign locally you need the wallet files in `~/.bittensor/wallets/`. These are provided in `mechanism/scripts/testnet_wallets.txt` — restore them with `btcli` before running this script.
+**Option B — Talisman / Polkadot.js:** Import the mnemonic from `mechanism/scripts/testnet_wallets.txt` for the relevant hotkey, then sign via the browser extension.
 
 ### Step 4 — Paste the signature
 
@@ -91,13 +100,7 @@ python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
 ## Validator 1
 
 ```bash
-VALIDATOR_PLATFORM_API_URL=https://staging.vividverse.ai \
-  python3 neurons/validator.py \
-  --netuid 210 \
-  --subtensor.network test \
-  --wallet.name miner \
-  --wallet.hotkey hotkey3 \
-  --logging.debug
+docker run vividverse-validator
 ```
 
 ```
@@ -124,13 +127,7 @@ python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
 ## Validator 2
 
 ```bash
-VALIDATOR_PLATFORM_API_URL=https://staging.vividverse.ai \
-  python3 neurons/validator.py \
-  --netuid 210 \
-  --subtensor.network test \
-  --wallet.name miner \
-  --wallet.hotkey hotkey1 \
-  --logging.debug
+docker run -e WALLET_HOTKEY=hotkey1 vividverse-validator
 ```
 
 ```
