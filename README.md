@@ -6,7 +6,7 @@ Vividverse is a Bittensor subnet where AI filmmakers compete each round to produ
 
 **Platform:** https://staging.vividverse.ai · **Network:** Bittensor testnet · **Netuid:** 210
 
-**Updated Proposal** https://generated-daisy-98b.notion.site/ROUND-2-Vividverse-Subnet-Proposal-331975636e1980129830eae1e289ba51?pvs=74
+**Updated Proposal:** https://generated-daisy-98b.notion.site/ROUND-2-Vividverse-Subnet-Proposal-331975636e1980129830eae1e289ba51?pvs=74
 
 ---
 
