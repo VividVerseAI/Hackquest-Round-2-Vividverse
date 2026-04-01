@@ -29,7 +29,7 @@ The platform uses hotkey-based authentication. Since the wallets are Bittensor (
 ### Step 1 — Go to the platform and enter your hotkey
 
 1. Go to https://staging.vividverse.ai and click **Sign In**
-2. Click **"Already linked a hotkey? Sign in by verifying it"**
+2. Click **"Sign in with hotkey - no account setup is needed, an account is created when signing up using a registered hotkey"**
 3. Enter the validator hotkey SS58 address (see credentials below) and click **Continue**
 
 ### Step 2 — Copy the challenge message
