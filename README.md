@@ -29,5 +29,5 @@ See **[Run & Setup.md](Run%20&%20Setup.md)** — wallet credentials, critic logi
 
 ## How It Works in One Paragraph
 
-Miners register on chain and submit AI-generated video scenes through the platform UI — no local neuron required. Critics (tied to validator accounts) score each submission. The validator runs locally, pushes lifecycle heartbeats to the platform every ~10 seconds to drive round state, and at finalisation fetches the median scores from its critic pool, computes weights using a 70/30 winner/proportional split, and calls `set_weights()` on the Bittensor chain.
+Miners register on-chain and submit AI-generated video scenes through the platform UI — no local neuron required. The validator runs locally, pushes lifecycle heartbeats to the platform every ~10 seconds to drive round state, and at finalisation aggregates miner submission scores, computes weights using a 70/30 winner/proportional split, and calls set_weights() on the Bittensor chain.
 
