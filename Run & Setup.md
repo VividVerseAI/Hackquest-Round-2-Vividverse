@@ -13,12 +13,12 @@
 ## Install
 
 ```bash
-cd mechanism
-pip install -r requirements.txt
+# From the repo root:
 pip install -e .
+pip install -r mechanism/requirements.txt
 ```
 
-`pip install -e .` installs the `vividverse` package (located in `Subnet/`) so the validator can import it. This must be run from the `mechanism/` directory.
+`pip install -e .` maps `import vividverse` to the `Subnet/` directory. Must be run from the repo root (where `setup.py` is). Then install the remaining requirements from `mechanism/`.
 
 ---
 
