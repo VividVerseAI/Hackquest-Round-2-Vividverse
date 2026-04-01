@@ -17,22 +17,13 @@ ENV VALIDATOR_PLATFORM_API_URL=https://staging.vividverse.ai
 
 WORKDIR /app/mechanism
 
-# Wallet credentials are provided at runtime via the entrypoint env vars:
-#   BT_HOTKEY_JSON_BASE64   — base64(hotkey.json)
-#   BT_COLDKEYPUB_BASE64    — base64(coldkeypub.txt)
-#   BT_WALLET_NAME          — wallet folder name  (default: miner)
-#   BT_HOTKEY_NAME          — hotkey file name    (default: hotkey3)
-#
-# See mechanism/scripts/testnet_wallets.txt for mnemonic phrases to restore wallets,
-# and Run & Setup.md for the sign-in guide.
-#
-# Example:
-#   docker run \
-#     -e BT_HOTKEY_JSON_BASE64=<base64> \
-#     -e BT_COLDKEYPUB_BASE64=<base64> \
-#     -e BT_WALLET_NAME=miner \
-#     -e BT_HOTKEY_NAME=hotkey3 \
-#     vividverse-validator
-
-ENTRYPOINT ["bash", "scripts/validator-entrypoint.sh"]
+# Run the validator — set WALLET_HOTKEY to switch between validators (default: hotkey3)
+# Wallets are read from ~/.bittensor/wallets/ — mount your local wallet directory:
+#   docker run -v ~/.bittensor:/root/.bittensor vividverse-validator
+CMD python3 neurons/validator.py \
+      --netuid 210 \
+      --subtensor.network test \
+      --wallet.name miner \
+      --wallet.hotkey ${WALLET_HOTKEY:-hotkey3} \
+      --logging.debug
 
