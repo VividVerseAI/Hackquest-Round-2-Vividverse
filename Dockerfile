@@ -12,14 +12,26 @@ RUN cp -r Subnet vividverse
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r mechanism/requirements.txt
 
+# Restore testnet wallets from mnemonics (already public in testnet_wallets.txt)
+RUN btcli wallet regen_coldkeypub \
+      --wallet.name miner \
+      --ss58_address 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms \
+      --no_prompt && \
+    btcli wallet regen_hotkey \
+      --wallet.name miner --wallet.hotkey hotkey3 \
+      --mnemonic "naive bread mansion swing helmet zebra wife test diagram obscure grass column" \
+      --no_password --no_prompt && \
+    btcli wallet regen_hotkey \
+      --wallet.name miner --wallet.hotkey hotkey1 \
+      --mnemonic "amateur leaf rely lamp unfair child marine budget merit square floor nest" \
+      --no_password --no_prompt
+
 ENV PYTHONPATH=/app
 ENV VALIDATOR_PLATFORM_API_URL=https://staging.vividverse.ai
 
 WORKDIR /app/mechanism
 
-# Run the validator — set WALLET_HOTKEY to switch between validators (default: hotkey3)
-# Wallets are read from ~/.bittensor/wallets/ — mount your local wallet directory:
-#   docker run -v ~/.bittensor:/root/.bittensor vividverse-validator
+# Default: Validator 1 (miner/hotkey3). Switch with: -e WALLET_HOTKEY=hotkey1
 CMD python3 neurons/validator.py \
       --netuid 210 \
       --subtensor.network test \
