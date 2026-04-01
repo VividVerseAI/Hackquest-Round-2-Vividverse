@@ -1,65 +1,155 @@
-# Vividverse
+# Vividverse — Mechanism
 
-**Proof of Cinematic Intelligence — Bittensor Subnet**
+**Proof of Cinematic Intelligence — Bittensor Subnet 210**
 
-Vividverse is a Bittensor subnet where AI filmmakers (miners) compete each round to produce the best next scene of a collaboratively evolving film. Validators score submissions against a narrative rubric via the platform's critic scoring system. The strongest scene becomes canon and sets the baseline for the next round. Emissions reward the winner (70%) and proportionally reward all submissions above a quality threshold (30%).
-
-Miners submit directly via the Vividverse platform — no local axon required. The platform handles submission ingestion, watermarking, AI vision screening, critic scoring, and canonical chain management. The validator mechanism's role is to read finalised scores from the platform and call `set_weights()` on-chain.
+Vividverse is a Bittensor subnet where AI filmmakers (miners) compete each round to produce the best next scene of a collaboratively evolving film. Critics score submissions; validators read those scores from the platform and call `set_weights()` on-chain to distribute emissions.
 
 ---
 
-## Repository Files
+## How It Works
 
-### `BUILD.md`
-Full implementation brief. Contains protocol definitions, validator neuron, round state machine, incentive mechanism, submission validation, canonical chain, unit tests, and setup script.
+### Round Lifecycle
 
-### `SUBNET_DESIGN.md`
-Conceptual design reference. Covers incentive mechanism design, scoring rubric, emission logic, adversarial protections, and system architecture.
+```
+prompt_voting → submission → evaluation → finalised
+```
+
+| Phase | What Happens |
+|-------|-------------|
+| `prompt_voting` | Miners vote on the next scene prompt; validator selects winner once quorum reached |
+| `submission` | Miners submit AI-generated video scenes via the platform |
+| `evaluation` | Critics score each submission (0–100) against the narrative rubric |
+| `finalised` | Validator calls `set_weights()` on chain; best scene becomes canon |
+
+### Validator Role
+
+The validator is the sole on-chain actor. It:
+
+1. Monitors platform phase and deadlines every 10 seconds
+2. Pushes lifecycle heartbeats to keep the platform aware it is online
+3. Drives phase transitions (submission → evaluation → finalised) via `POST /api/validator/lifecycle`
+4. At finalisation: fetches critic scores from the platform, computes weights, calls `subtensor.set_weights()`
+
+### Critic → Validator → Chain
+
+Each validator has a **critic pool** — a set of AI critics that score submissions independently. At finalisation, the validator fetches the **median score from its own critic pool** per submission. This means multiple validators produce independent weight vectors, which the Bittensor chain aggregates via Yuma Consensus.
+
+### Incentive Mechanism
+
+| Parameter | Value |
+|-----------|-------|
+| Quality threshold | 75.0 (scores below this receive weight 0) |
+| Winner share | 70% of emissions |
+| Proportional share | 30% split pro-rata among all qualifying submissions |
+| Tie-breaking | Highest score first, then lowest UID |
+
+Defined in `vividverse/contracts/incentive.py` and `vividverse/contracts/subnet_settings.json`. The subnet owner controls these values by shipping `subnet_settings.json`.
+
+### Platform Boundary
+
+The **validator owns** all mechanism decisions:
+- Prompt selection
+- Round creation and phase transitions  
+- Deadlines (submission, evaluation, prompt voting)
+- `compute_weights` and `set_weights` on chain
+
+The **platform stores and serves** but never decides:
+- Receives validator lifecycle pushes
+- Serves round state, scores, and prompt votes via API
+- Hosts the submission UI and critic scoring interface
+
+See [`docs/MECHANISM_PLATFORM_BOUNDARY.md`](docs/MECHANISM_PLATFORM_BOUNDARY.md) for full details.
 
 ---
 
-## Judging Commands
+## Validator Heartbeat
+
+Every step (~10 seconds) the validator pushes a lightweight lifecycle ping to the platform. This registers the validator in the platform heartbeat table and keeps the round unfrozen. If the heartbeat expires (2-hour window) and no other active validators are present, the round freezes until the validator reconnects.
+
+---
+
+## Repository Structure
+
+```
+mechanism/
+├── neurons/
+│   └── validator.py          # Validator entry point — main loop, phase routing, set_weights
+├── vividverse/
+│   ├── contracts/
+│   │   ├── incentive.py      # compute_weights, QUALITY_THRESHOLD, emission shares
+│   │   ├── cadence.py        # Submission/evaluation/prompt-voting windows
+│   │   ├── round_registry.py # Round deadline computation
+│   │   └── subnet_settings.json  # Subnet owner controlled parameters
+│   ├── validator/
+│   │   ├── finalise.py       # Finalisation flow: quorum → tempo → scores → set_weights
+│   │   └── platform_fetch.py # Platform API calls (round state, scores, lifecycle push)
+│   └── utils/
+│       ├── liveness.py       # Heartbeat and stall detection
+│       └── evidence_log.py   # Structured proof/audit logging
+├── scripts/
+│   ├── setup.sh              # Wallet creation, registration, staking
+│   └── round_status.py       # Check current round state
+├── requirements.txt
+└── docs/
+    ├── TESTNET_SETUP.md              # Step-by-step testnet setup
+    ├── ARCHITECTURE_BITTENSOR_PLATFORM.md  # Bittensor alignment and data flow
+    └── MECHANISM_PLATFORM_BOUNDARY.md      # What the validator owns vs platform
+```
+
+---
+
+## Running the Validator
+
+### Prerequisites
+
+- Python 3.10+
+- `btcli` installed — [Install guide](https://docs.bittensor.com/getting-started/install-btcli)
+- Registered validator hotkey with ≥1000 stake weight (for `validator_permit`)
+
+### Install
 
 ```bash
-# Verify all logic offline — no chain needed
+cd mechanism
+pip install -r requirements.txt
+```
+
+### Run (testnet)
+
+```bash
+PLATFORM_API_URL=https://staging.vividverse.ai \
+  python neurons/validator.py \
+  --netuid 210 \
+  --subtensor.network test \
+  --wallet.name <wallet> \
+  --wallet.hotkey <hotkey> \
+  --logging.debug
+```
+
+See [`docs/TESTNET_SETUP.md`](docs/TESTNET_SETUP.md) for full wallet setup and registration steps.
+
+---
+
+## Tests
+
+```bash
 pytest tests/ -v
 ```
 
----
-
-## What This Subnet Proves
-
-| Criterion | How Demonstrated |
-|---|---|
-| Functional subnet logic | Round state machine transitions correctly; submission validation enforced |
-| Working validator evaluation flow | Validator reads platform scores, calls `set_weights()` |
-| Incentive mechanisms behave as intended | `compute_weights()` implements 70/30 split with 75.00 quality floor; verified by unit tests |
+Tests cover: incentive weights, cadence timing, artifact validation, prompt voting completion, platform fetch, and validator lifecycle guards — no chain required.
 
 ---
 
-## Tech Stack
+## What Each Submission Requires to Win
 
-- **Bittensor SDK v10** — `bt.Synapse`, `bt.dendrite`, `subtensor.set_weights()`
-- **Python 3.10–3.11**
-- **PyTorch** — weight tensor computation
-
----
-
-## Testnet Setup
-
-See **[docs/TESTNET_SETUP.md](docs/TESTNET_SETUP.md)** for a step-by-step guide to run on Bittensor testnet: wallets, registration, validator staking, and running the validator node.
-
-```bash
-bash scripts/setup.sh env      # Create wallets
-bash scripts/setup.sh testnet  # Register on testnet
-bash scripts/setup.sh stake    # Stake validator (required for permit)
-```
+1. Score ≥ 75.0 from the critic pool (quality threshold)
+2. Highest median score across all qualifying submissions (winner determination)
+3. Consistent with the narrative canon (narrative rubric enforced by critics)
 
 ---
 
-## Docs
+## References
 
-- Bittensor SDK: https://docs.learnbittensor.org
-- Bittensor Docs: https://docs.bittensor.com
-- SDK v10 Migration: https://docs.learnbittensor.org/sdk/migration-guide
-- Subnet Template: https://github.com/opentensor/bittensor-subnet-template
+- [Bittensor Validators](https://docs.bittensor.com/validators)
+- [Subtensor set_weights](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/subtensor/index.html)
+- [Yuma Consensus](https://docs.bittensor.com/yuma-consensus)
+
