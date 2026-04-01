@@ -15,23 +15,19 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
 # Install btcli for wallet restoration
 RUN pip install --no-cache-dir bittensor-cli
 
-# Restore registered validator wallet from mnemonics (public in testnet_wallets.txt)
+# Restore testnet validator wallets from mnemonics (public in testnet_wallets.txt)
 RUN btcli wallet regen_coldkeypub \
-      --wallet-name validator \
+      --wallet-name miner \
       --wallet-path /root/.bittensor/wallets \
-      --ss58-address 5D7tp3Mabe5ALxtDZNLzWdLdCGrW4moGwE1xyosjBgBNCJit \
+      --ss58-address 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms \
       --overwrite && \
     btcli wallet regen_hotkey \
-      --wallet-name validator --wallet-path /root/.bittensor/wallets --hotkey hotkey1 \
-      --mnemonic "quote time ribbon sample figure deal pact exchange east delay clever dinner" \
+      --wallet-name miner --wallet-path /root/.bittensor/wallets --hotkey hotkey3 \
+      --mnemonic "naive bread mansion swing helmet zebra wife test diagram obscure grass column" \
       --no-use-password --overwrite && \
     btcli wallet regen_hotkey \
-      --wallet-name validator --wallet-path /root/.bittensor/wallets --hotkey hotkey2 \
-      --mnemonic "connect typical symptom odor cotton company any street heavy please mean winter" \
-      --no-use-password --overwrite && \
-    btcli wallet regen_hotkey \
-      --wallet-name validator --wallet-path /root/.bittensor/wallets --hotkey hotkey3 \
-      --mnemonic "rib window silent lock betray cancel swear sea process chef learn suit" \
+      --wallet-name miner --wallet-path /root/.bittensor/wallets --hotkey hotkey1 \
+      --mnemonic "amateur leaf rely lamp unfair child marine budget merit square floor nest" \
       --no-use-password --overwrite
 
 ENV PYTHONPATH=/app
@@ -39,11 +35,11 @@ ENV VALIDATOR_PLATFORM_API_URL=https://staging.vividverse.ai
 
 WORKDIR /app/mechanism
 
-# Default: Validator 1 (validator/hotkey1). Switch with: -e WALLET_HOTKEY=hotkey2 or hotkey3
+# Default: Validator 1 (miner/hotkey3). Switch with: -e WALLET_HOTKEY=hotkey1 for Validator 2
 CMD python3 neurons/validator.py \
       --netuid 210 \
       --subtensor.network test \
-      --wallet.name validator \
-      --wallet.hotkey ${WALLET_HOTKEY:-hotkey1} \
+      --wallet.name miner \
+      --wallet.hotkey ${WALLET_HOTKEY:-hotkey3} \
       --logging.debug
 
