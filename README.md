@@ -21,7 +21,6 @@ See **[Run & Setup.md](Run%20&%20Setup.md)** — wallet credentials, critic logi
 | [Run & Setup.md](Run%20&%20Setup.md) | **Start here.** Install steps, validator run commands, wallet credentials, critic logins |
 | [mechanism/README.md](mechanism/README.md) | How the mechanism works — round phases, incentive logic, validator role, repo structure |
 | [mechanism/neurons/validator.py](mechanism/neurons/validator.py) | Validator entry point — phase routing, heartbeat, `set_weights` |
-| [mechanism/docs/TESTNET_SETUP.md](mechanism/docs/TESTNET_SETUP.md) | Full testnet setup — wallet creation, registration, staking |
 | [mechanism/docs/ARCHITECTURE_BITTENSOR_PLATFORM.md](mechanism/docs/ARCHITECTURE_BITTENSOR_PLATFORM.md) | How Vividverse uses Bittensor — where it differs from the standard template (no miner axon) |
 | [mechanism/docs/MECHANISM_PLATFORM_BOUNDARY.md](mechanism/docs/MECHANISM_PLATFORM_BOUNDARY.md) | What the validator owns vs what the platform does |
 | `Subnet/` | The `vividverse` Python package — contracts, incentive logic, validator modules |
