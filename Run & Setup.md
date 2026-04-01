@@ -46,7 +46,7 @@ Issued: <timestamp>
 Expires: <timestamp>
 ```
 
-### Step 3 — Sign it with sign_challenge.py
+### Step 3 — Sign it with sign_challenge.py OR (simpler) with Talisman/polkadot.js wallet by importing them using neumonic phrase in scripts/testnet_wallets.txt - these wallets support substrate.
 
 From the `mechanism/` directory, run:
 
