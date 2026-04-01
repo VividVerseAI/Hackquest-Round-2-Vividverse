@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir bittensor-cli
 # Restore testnet wallets from mnemonics (already public in testnet_wallets.txt)
 RUN btcli wallet regen_coldkeypub \
       --wallet.name miner \
-      --ss58_address 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms \
+      --ss58-address 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms \
       --no_prompt && \
     btcli wallet regen_hotkey \
       --wallet.name miner --wallet.hotkey hotkey3 \
