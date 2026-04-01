@@ -1,140 +1,136 @@
 # Vividverse Architecture: Bittensor Alignment & Platform Integration
 
-This document verifies alignment with [Bittensor documentation](https://docs.bittensor.com/) and describes tight integration with vividverse-platform.
+This document describes how the Vividverse subnet uses Bittensor and where it intentionally
+departs from the standard template to support a platform-native miner model.
 
-**Principle:** The subnet/validator/miner/mechanism is the real system. The platform is the interface. See `mechanism/docs/MECHANISM_PLATFORM_BOUNDARY.md` and `docs/MECHANISM_ALIGNMENT_AUDIT.md`.
+---
 
-## Bittensor Architecture (per docs.bittensor.com)
+## How Vividverse Differs From the Standard Bittensor Template
 
-### Core Components
+In the standard Bittensor model, miners run local axon servers, validators query them via
+Dendrite/Synapse, and score the responses directly. Vividverse uses a different model:
 
-| Component | Role | Bittensor Docs |
-|-----------|------|----------------|
-| **Axon** | Server — miners deploy Axon to receive validator requests | [Axon API](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/axon/index.html) |
-| **Dendrite** | Client — validators use Dendrite to query miners | [Dendrite API](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/dendrite/index.html) |
-| **Synapse** | Data schema — Pydantic-based objects exchanged between neurons | [Synapse API](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/synapse/index.html) |
-| **Metagraph** | Subnet state — UIDs, hotkeys, axons, validator_permit, emissions | [Metagraph](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/metagraph/index.html) |
-| **Subtensor** | Blockchain gateway — set_weights, registration | [Subtensor](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/subtensor/index.html) |
+**Miners are platform-native.** There is no `miner.py`. Miners register their hotkey on
+chain, then submit AI-generated video scenes through the Vividverse platform UI. The platform
+handles ingestion, watermarking, AI vision screening, and stores submissions against the
+miner hotkey. There is no local axon, no IP endpoint advertised on chain, and no
+Dendrite/Synapse query path.
 
-### Validator Role (per docs.bittensor.com/validators)
+**Scoring is done by critics, not directly by validators.** Each validator has a pool of
+AI critics. Critics score submissions through the platform. The validator reads those scores
+at finalisation time via the platform API and uses them to call `set_weights()`.
 
-1. **Gateway** — Users/apps query subnet through validator hotkeys
-2. **Validation** — Score miner responses and submit weights via `set_weights`
+This design separates the on-chain accountability layer (validator → `set_weights`) from
+the scoring layer (critics → platform), while keeping the metagraph as the source of truth
+for miner registration and emissions.
 
-Requirements: registered hotkey, UID, stake weight ≥ 1000, top 64 by emissions.
+---
 
-### Miner Role (per docs.bittensor.com/miners)
+## Bittensor Components Used
 
-1. **Produce commodity** — Generate work per subnet incentive mechanism
-2. **Publish Axon** — Register IP:PORT on chain via `axon.serve(netuid, subtensor).start()`
-3. **Respond to queries** — Handle Synapse requests from validators
+| Component | Used | How |
+|-----------|------|-----|
+| **Metagraph** | Yes | Validator reads `hotkeys`, `validator_permit`, `n` for UID mapping and weight tensor size |
+| **Subtensor** | Yes | `subtensor.set_weights()` called at round finalisation |
+| **Wallet / Hotkey** | Yes | Validator signs lifecycle pushes; hotkey verified by platform against metagraph |
+| **Axon** | No | Miners do not run axons — submission is via platform UI |
+| **Dendrite** | No | Validator does not query miners directly |
+| **Synapse** | No | No direct validator↔miner message passing |
 
-### Subnet Flow
+---
+
+## Participant Roles
+
+| Role | On Chain | Platform |
+|------|----------|----------|
+| **Miner** | Registered hotkey + UID; receives emissions | Submits scenes via platform UI; no local neuron required |
+| **Validator** | Registered hotkey + UID; `validator_permit`; calls `set_weights()` | Runs `neurons/validator.py`; pushes lifecycle state; reads critic scores |
+| **Critic** | No chain presence | Scores submissions on platform; tied to a validator account |
+
+---
+
+## Data Flow
 
 ```
-Validator (Dendrite)  ──Synapse──►  Miner (Axon)
-Validator (set_weights) ──────────►  Blockchain (Subtensor)
-Miner (serve)         ──────────►  Blockchain (advertise endpoint)
+Miner
+  └── Registers hotkey on chain (btcli subnet register)
+  └── Submits scene via Platform UI  ──►  Platform stores submission + minerHotkey
+
+Critics (per validator pool)
+  └── Score submissions via Platform  ──►  Platform stores rawScore per submission
+
+Validator (neurons/validator.py)
+  └── Every ~10s:
+        GET /api/rounds/current            — current round ID
+        GET /api/subnet/rounds/{id}/state  — phase, deadlines
+        POST /api/validator/lifecycle      — push heartbeat / phase transition
+  └── At finalisation:
+        GET /api/subnet/rounds/{id}/scores — critic scores for this validator's pool
+        compute_weights(scores)            — 70/30 incentive split
+        subtensor.set_weights(...)         — write weights on chain
 ```
 
 ---
 
-## Vividverse Mechanism Alignment
+## Validator Lifecycle
 
-### Miner (`neurons/miner.py`)
+The validator drives all round state. The platform stores it. Key pushes:
 
-| Bittensor Pattern | Implementation |
-|-------------------|----------------|
-| Axon as server | `bt.axon(wallet, config)` ✓ |
-| Attach forward_fn, blacklist_fn | `axon.attach(forward_fn, blacklist_fn, synapse_type=RoundStateQuery)` ✓ |
-| Blacklist non-validators | `_blacklist_round_state` checks `validator_permit` ✓ |
-| Register on chain | `axon.serve(netuid, subtensor).start()` when available ✓ |
-| Synapse types | `RoundStateQuery`, `SubmissionSynapse` (extend `bt.Synapse`) ✓ |
-
-### Validator (`neurons/validator.py`)
-
-| Bittensor Pattern | Implementation |
-|-------------------|----------------|
-| Dendrite to query miners | `dendrite(axons, synapse, timeout)` ✓ |
-| Metagraph for axons | `metagraph.axons`, `metagraph.hotkeys`, `metagraph.validator_permit` ✓ |
-| set_weights on chain | `subtensor.set_weights(wallet, netuid, uids, weights)` ✓ |
-| Miner UIDs (non-validator) | `_get_miner_uids` filters by `not validator_permit` ✓ |
-
-### Protocol (`vividverse/protocol.py`)
-
-| Bittensor Pattern | Implementation |
-|-------------------|----------------|
-| Synapse extends bt.Synapse | `RoundStateQuery(bt.Synapse)`, `SubmissionSynapse(bt.Synapse)` ✓ |
-| Pydantic fields | All fields typed; Optional for response fields ✓ |
-| Request vs response | Validator sets request; miner fills response ✓ |
+| Push | When | Effect on Platform |
+|------|------|--------------------|
+| `prompt_voting` heartbeat | Every step while no active round | Registers validator presence |
+| `prompt_voting` + deadline | Enough miners have voted | Arms the voting window |
+| `submission` | Prompt voting complete | Platform opens submission window |
+| `evaluation` | Submission deadline passed | Platform opens evaluation window |
+| `finalised` + scores | Critic quorum + tempo boundary met | Platform marks round finalised |
 
 ---
 
-## Platform Integration
+## Validator Authentication with Platform
 
-### Roles Mapping
+The validator authenticates lifecycle pushes in one of two ways:
 
-| Platform Role | Subnet Role | Integration |
-|---------------|-------------|-------------|
-| Miner | Miner | Submits via Platform UI; miner neuron fetches metadata from Platform API |
-| Critic | Validator (scoring) | Critics score on Platform → ValidatorScore → subnet scores endpoint |
-| Validator | Validator | Platform validators run mechanism validator with PLATFORM_API_URL |
-| Admin | — | Platform admin; no direct subnet role |
-
-### Data Flow
-
-```
-Platform (Next.js)                    Mechanism (Python)
-─────────────────                    ─────────────────
-GET /api/miner/metadata     ◄──────  Miner fetches submission metadata
-GET /api/rounds/current     ◄──────  Miner cold start, Validator round state
-GET /api/subnet/rounds/[id]/state   ◄──────  Validator fetches phase, deadlines
-GET /api/subnet/rounds/[id]/scores  ◄──────  Validator fetches critic scores
-
-Critics score via /api/validator/score  →  ValidatorScore  →  rawScore on Submission
-                                                              ↓
-Validator finalisation  →  fetch scores  →  compute_weights  →  set_weights
-```
-
-### Phase & Cadence
-
-- **Platform phases**: `prompt_voting` → `submission` → `evaluation` → `finalised`
-- **Subnet phases** (mirrored): `submission` → `evaluation` → `finalised`
-- **Cadence**: Platform drives deadlines; validator uses `submission_deadline_unix`, `evaluation_deadline_unix` from Platform
-
-### Submission Types
-
-| Platform Field | Protocol Field | Notes |
-|----------------|----------------|-------|
-| submissionHash | submission_hash | ✓ |
-| submissionUrl | submission_url | ✓ |
-| durationSeconds | duration_seconds | ✓ |
-| hasAudio | has_audio | ✓ |
-| narrativeProgression | narrative_progression | ✓ (Round 2+) |
-| minerHotkey | miner_hotkey | ✓ |
+- **Metagraph verification (default)** — Platform checks the validator hotkey against the live metagraph via HTTP bridge. Slower but requires no shared secret.
+- **Shared secret (optional)** — Set `VALIDATOR_INGEST_SECRET` (matching `PLATFORM_VALIDATOR_INGEST_SECRET` on the platform) for a faster path that skips the metagraph call.
 
 ---
 
-## Environment & Usage
+## Incentive Mechanism
 
-### Miner (Platform mode)
+Scores from the validator's critic pool determine weights. All logic is in `vividverse/contracts/incentive.py`:
 
-```bash
-PLATFORM_API_URL=http://localhost:3000 python neurons/miner.py --netuid 1 --subtensor.network local
+```
+qualifying = submissions where critic_score >= QUALITY_THRESHOLD (75.0)
+winner     = highest scoring qualifying submission (lowest UID on tie)
+weights:
+  winner              → WINNER_SHARE      (0.70)
+  other qualifying    → PROPORTIONAL_SHARE (0.30) split pro-rata by score
+  below threshold     → 0
 ```
 
-### Validator (Platform mode)
-
-```bash
-PLATFORM_API_URL=http://localhost:3000 python neurons/validator.py --netuid 1 --subtensor.network local
-```
-
-### Standalone (no Platform)
-
-Omit `PLATFORM_API_URL`; validator uses local RoundStateManager and SQLite scores.
+Parameters are set in `vividverse/contracts/subnet_settings.json` and loaded at import time. The subnet owner controls them by shipping that file.
 
 ---
 
-## Mechanism–Platform Boundary
+## Phase & Cadence
 
-See **MECHANISM_PLATFORM_BOUNDARY.md** for what the validator/miner actually enforce vs consume. In Platform mode, lifecycle (phases, deadlines, rounds) is owned by Platform; mechanism consumes via API.
+```
+prompt_voting  →  submission  →  evaluation  →  finalised
+```
+
+- **prompt_voting**: Miners vote on the next scene prompt. Validator arms a deadline once enough miners vote, then selects the winning prompt.
+- **submission**: Miners submit scenes via the platform UI. Deadline set by validator at round creation.
+- **evaluation**: Critics score submissions. Validator waits for critic quorum before finalising.
+- **finalised**: Validator calls `set_weights()` on chain. Winning scene becomes the canonical next entry in the film.
+
+Timing constants (`submissionWindowSec`, `evaluationWindowSec`, etc.) live in `vividverse/contracts/subnet_settings.json`.
+
+---
+
+## References
+
+- [Bittensor Validators](https://docs.bittensor.com/validators)
+- [Subtensor set_weights](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/subtensor/index.html)
+- [Metagraph](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/metagraph/index.html)
+- [Yuma Consensus](https://docs.bittensor.com/yuma-consensus)
+
