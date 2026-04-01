@@ -12,6 +12,9 @@ RUN cp -r Subnet vividverse
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r mechanism/requirements.txt
 
+# Install btcli for wallet restoration
+RUN pip install --no-cache-dir bittensor-cli
+
 # Restore testnet wallets from mnemonics (already public in testnet_wallets.txt)
 RUN btcli wallet regen_coldkeypub \
       --wallet.name miner \
