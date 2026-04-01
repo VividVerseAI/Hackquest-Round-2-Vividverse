@@ -19,15 +19,15 @@ RUN pip install --no-cache-dir bittensor-cli
 RUN btcli wallet regen_coldkeypub \
       --wallet.name miner \
       --ss58-address 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms \
-      --no_prompt && \
+      --no-prompt && \
     btcli wallet regen_hotkey \
       --wallet.name miner --wallet.hotkey hotkey3 \
       --mnemonic "naive bread mansion swing helmet zebra wife test diagram obscure grass column" \
-      --no_password --no_prompt && \
+      --no-password --no-prompt && \
     btcli wallet regen_hotkey \
       --wallet.name miner --wallet.hotkey hotkey1 \
       --mnemonic "amateur leaf rely lamp unfair child marine budget merit square floor nest" \
-      --no_password --no_prompt
+      --no-password --no-prompt
 
 ENV PYTHONPATH=/app
 ENV VALIDATOR_PLATFORM_API_URL=https://staging.vividverse.ai
