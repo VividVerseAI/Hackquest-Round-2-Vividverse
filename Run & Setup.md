@@ -22,12 +22,63 @@ pip install -e .
 
 ---
 
+## Signing In to the Platform
+
+The platform uses hotkey-based authentication. Since the wallets are Bittensor (btcli) wallets — not Polkadot.js/Talisman — use `scripts/sign_challenge.py` to sign in.
+
+### Step 1 — Go to the platform and enter your hotkey
+
+1. Go to https://staging.vividverse.ai and click **Sign In**
+2. Click **"Already linked a hotkey? Sign in by verifying it"**
+3. Enter the validator hotkey SS58 address (see credentials below) and click **Continue**
+
+### Step 2 — Copy the challenge message
+
+The platform displays a challenge message. Click **"Copy message"** or copy the full text manually. It will look something like:
+
+```
+Vividverse hot key verification
+Domain: staging.vividverse.ai
+Hotkey: <your hotkey SS58>
+Netuid: 210
+Nonce: <random>
+Issued: <timestamp>
+Expires: <timestamp>
+```
+
+### Step 3 — Sign it with sign_challenge.py
+
+From the `mechanism/` directory, run:
+
+```bash
+python3 scripts/sign_challenge.py -m "PASTE_FULL_MESSAGE_HERE" \
+  --wallet.name miner \
+  --wallet.hotkey hotkey3
+```
+
+Replace `hotkey3` with the hotkey label for the validator you are signing in as (see credentials below). The script prints a `0x...` hex signature.
+
+> **Note:** The wallets are pre-loaded on the cloud validator. To sign locally you need the wallet files in `~/.bittensor/wallets/`. These are provided in `mechanism/scripts/testnet_wallets.txt` — restore them with `btcli` before running this script.
+
+### Step 4 — Paste the signature
+
+Back on the platform, scroll past "Sign with Polkadot.js / Talisman" to the **"or paste signature"** field. Paste the `0x...` hex and click **Submit signature**.
+
+---
+
 ## Owner Validator *(running in the cloud — no command needed)*
 
 ```
 wallet.name : testnetwallet
 wallet.hotkey: hotkey1
 hotkey SS58  : 5G4f6JH8prntQG8WQRygJ2azF8YnkeDzPc2SvZm71KwK3kkg
+```
+
+Sign in command:
+```bash
+python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
+  --wallet.name testnetwallet \
+  --wallet.hotkey hotkey1
 ```
 
 | Critic | Email | Password |
@@ -56,6 +107,13 @@ hotkey SS58  : 5C8TKtHpZx7TeP4jUDqBW63JmoAwTD7fPgaa91foUtQoYeP1
 coldkey SS58 : 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms
 ```
 
+Sign in command:
+```bash
+python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
+  --wallet.name miner \
+  --wallet.hotkey hotkey3
+```
+
 | Critic | Email | Password |
 |--------|-------|----------|
 | Critic 1 | critic-c5f43a8132d9e55e@vividverse.invite | lxtkSKmmoUUrRs1m |
@@ -80,6 +138,13 @@ wallet.name : miner
 wallet.hotkey: hotkey1
 hotkey SS58  : 5Fk92bfzoV5fYrEY4AVycdeg3mUNDE6h88W1WF5gjbZWveUa
 coldkey SS58 : 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms
+```
+
+Sign in command:
+```bash
+python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
+  --wallet.name miner \
+  --wallet.hotkey hotkey1
 ```
 
 | Critic | Email | Password |
