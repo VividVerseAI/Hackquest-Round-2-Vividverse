@@ -1766,6 +1766,11 @@ class Validator:
                     "invoking_finalise_round_platform (tempo_and_quorum_gates_inside)"
                 ),
             )
+            # Push a heartbeat so the platform sees this validator as active even while
+            # finalisation is blocked (e.g. waiting for critic quorum). Without this,
+            # the validator never pushes a lifecycle in the finalisation_due branch and
+            # its heartbeat expires, causing Validators: 0 / frozen state.
+            self._push_phase_heartbeat("evaluation", round_id, state, selected_prompt_id=selected_prompt_id)
             await self._finalise_round_platform(round_mgr)
 
     def _push_phase_heartbeat(
