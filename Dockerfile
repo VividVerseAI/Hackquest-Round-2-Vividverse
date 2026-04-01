@@ -17,17 +17,17 @@ RUN pip install --no-cache-dir bittensor-cli
 
 # Restore testnet wallets from mnemonics (already public in testnet_wallets.txt)
 RUN btcli wallet regen_coldkeypub \
-      --wallet.name miner \
+      --wallet-name miner \
       --ss58-address 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms \
-      --no-prompt && \
+      --overwrite && \
     btcli wallet regen_hotkey \
-      --wallet.name miner --wallet.hotkey hotkey3 \
+      --wallet-name miner --hotkey hotkey3 \
       --mnemonic "naive bread mansion swing helmet zebra wife test diagram obscure grass column" \
-      --no-password --no-prompt && \
+      --no-use-password --overwrite && \
     btcli wallet regen_hotkey \
-      --wallet.name miner --wallet.hotkey hotkey1 \
+      --wallet-name miner --hotkey hotkey1 \
       --mnemonic "amateur leaf rely lamp unfair child marine budget merit square floor nest" \
-      --no-password --no-prompt
+      --no-use-password --overwrite
 
 ENV PYTHONPATH=/app
 ENV VALIDATOR_PLATFORM_API_URL=https://staging.vividverse.ai
