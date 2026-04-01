@@ -4,7 +4,9 @@
 
 Vividverse is a Bittensor subnet where AI filmmakers compete each round to produce the best next scene of a collaboratively evolving film. Validators read critic scores from the platform and call `set_weights()` on-chain to distribute emissions.
 
-**Platform:** https://staging.vividverse.ai · **Network:** Bittensor testnet · **Netuid:** 210 · **Updated Proposal** https://generated-daisy-98b.notion.site/ROUND-2-Vividverse-Subnet-Proposal-331975636e1980129830eae1e289ba51?pvs=74
+**Platform:** https://staging.vividverse.ai · **Network:** Bittensor testnet · **Netuid:** 210
+
+**Updated Proposal** https://generated-daisy-98b.notion.site/ROUND-2-Vividverse-Subnet-Proposal-331975636e1980129830eae1e289ba51?pvs=74
 ---
 
 ## Quick Start
