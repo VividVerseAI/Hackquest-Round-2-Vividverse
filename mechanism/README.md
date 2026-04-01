@@ -100,32 +100,15 @@ mechanism/
 
 ## Running the Validator
 
-### Prerequisites
-
-- Python 3.10+
-- `btcli` installed — [Install guide](https://docs.bittensor.com/getting-started/install-btcli)
-- Registered validator hotkey with ≥1000 stake weight (for `validator_permit`)
-
-### Install
+**The easiest way is Docker** — no Python environment or wallet setup needed. See the [root Run & Setup.md](../Run%20%26%20Setup.md) for the full guide.
 
 ```bash
-cd mechanism
-pip install -r requirements.txt
+docker build -t vividverse-validator .
+docker run vividverse-validator                        # Validator 1 (miner/hotkey3)
+docker run -e WALLET_HOTKEY=hotkey1 vividverse-validator  # Validator 2 (miner/hotkey1)
 ```
 
-### Run (testnet)
-
-```bash
-PLATFORM_API_URL=https://staging.vividverse.ai \
-  python neurons/validator.py \
-  --netuid 210 \
-  --subtensor.network test \
-  --wallet.name <wallet> \
-  --wallet.hotkey <hotkey> \
-  --logging.debug
-```
-
-See [`docs/TESTNET_SETUP.md`](docs/TESTNET_SETUP.md) for full wallet setup and registration steps.
+The Docker image restores the testnet wallets automatically during build and connects to https://staging.vividverse.ai.
 
 ---
 
@@ -152,4 +135,3 @@ Tests cover: incentive weights, cadence timing, artifact validation, prompt voti
 - [Bittensor Validators](https://docs.bittensor.com/validators)
 - [Subtensor set_weights](https://docs.bittensor.com/python-api/html/autoapi/bittensor/core/subtensor/index.html)
 - [Yuma Consensus](https://docs.bittensor.com/yuma-consensus)
-
