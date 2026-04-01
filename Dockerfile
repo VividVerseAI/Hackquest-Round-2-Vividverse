@@ -18,14 +18,15 @@ RUN pip install --no-cache-dir bittensor-cli
 # Restore testnet wallets from mnemonics (already public in testnet_wallets.txt)
 RUN btcli wallet regen_coldkeypub \
       --wallet-name miner \
+      --wallet-path /root/.bittensor/wallets \
       --ss58-address 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms \
       --overwrite && \
     btcli wallet regen_hotkey \
-      --wallet-name miner --hotkey hotkey3 \
+      --wallet-name miner --wallet-path /root/.bittensor/wallets --hotkey hotkey3 \
       --mnemonic "naive bread mansion swing helmet zebra wife test diagram obscure grass column" \
       --no-use-password --overwrite && \
     btcli wallet regen_hotkey \
-      --wallet-name miner --hotkey hotkey1 \
+      --wallet-name miner --wallet-path /root/.bittensor/wallets --hotkey hotkey1 \
       --mnemonic "amateur leaf rely lamp unfair child marine budget merit square floor nest" \
       --no-use-password --overwrite
 
