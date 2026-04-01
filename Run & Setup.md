@@ -21,10 +21,10 @@ docker build -t vividverse-validator .
 docker run vividverse-validator
 ```
 
-This runs **Validator 1** (miner/hotkey3) by default. To run **Validator 2** instead:
+This runs **Validator 1** (validator/hotkey1) by default. To run **Validator 2** instead:
 
 ```bash
-docker run -e WALLET_HOTKEY=hotkey1 vividverse-validator
+docker run -e WALLET_HOTKEY=hotkey2 vividverse-validator
 ```
 
 The Docker image handles everything: installs all dependencies, pre-bakes the testnet wallets, and connects to the platform at https://staging.vividverse.ai automatically.
@@ -61,11 +61,11 @@ Expires: <timestamp>
 
 ```bash
 python3 scripts/sign_challenge.py -m "PASTE_FULL_MESSAGE_HERE" \
-  --wallet.name miner \
-  --wallet.hotkey hotkey3
+  --wallet.name validator \
+  --wallet.hotkey hotkey1
 ```
 
-Replace `hotkey3` with the hotkey label for the validator you are signing in as. The script prints a `0x...` hex signature.
+Replace `hotkey1` with the hotkey label for the validator you are signing in as (`hotkey1` or `hotkey2`). The script prints a `0x...` hex signature.
 
 **Option B — Talisman / Polkadot.js:** Import the mnemonic from `mechanism/scripts/testnet_wallets.txt` for the relevant hotkey, then sign via the browser extension.
 
@@ -104,17 +104,17 @@ docker run vividverse-validator
 ```
 
 ```
-wallet.name : miner
-wallet.hotkey: hotkey3
-hotkey SS58  : 5C8TKtHpZx7TeP4jUDqBW63JmoAwTD7fPgaa91foUtQoYeP1
-coldkey SS58 : 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms
+wallet.name : validator
+wallet.hotkey: hotkey1
+hotkey SS58  : 5Fvao11HgJ2rixMDT1dYRSeerngPgDRV6vGMnjuapFWhxGiS
+coldkey SS58 : 5D7tp3Mabe5ALxtDZNLzWdLdCGrW4moGwE1xyosjBgBNCJit
 ```
 
 Sign in command:
 ```bash
 python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
-  --wallet.name miner \
-  --wallet.hotkey hotkey3
+  --wallet.name validator \
+  --wallet.hotkey hotkey1
 ```
 
 | Critic | Email | Password |
@@ -127,21 +127,21 @@ python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
 ## Validator 2
 
 ```bash
-docker run -e WALLET_HOTKEY=hotkey1 vividverse-validator
+docker run -e WALLET_HOTKEY=hotkey2 vividverse-validator
 ```
 
 ```
-wallet.name : miner
-wallet.hotkey: hotkey1
-hotkey SS58  : 5Fk92bfzoV5fYrEY4AVycdeg3mUNDE6h88W1WF5gjbZWveUa
-coldkey SS58 : 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms
+wallet.name : validator
+wallet.hotkey: hotkey2
+hotkey SS58  : 5E1o8RgzY7shG63QvNpa6GGwaoRmLWLMWmz2Am4XnRU7oUdN
+coldkey SS58 : 5D7tp3Mabe5ALxtDZNLzWdLdCGrW4moGwE1xyosjBgBNCJit
 ```
 
 Sign in command:
 ```bash
 python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
-  --wallet.name miner \
-  --wallet.hotkey hotkey1
+  --wallet.name validator \
+  --wallet.hotkey hotkey2
 ```
 
 | Critic | Email | Password |
