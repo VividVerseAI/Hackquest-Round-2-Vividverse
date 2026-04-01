@@ -10,6 +10,18 @@
 
 ---
 
+## Install
+
+```bash
+cd mechanism
+pip install -r requirements.txt
+pip install -e .
+```
+
+`pip install -e .` installs the `vividverse` package (located in `Subnet/`) so the validator can import it. This must be run from the `mechanism/` directory.
+
+---
+
 ## Owner Validator *(running in the cloud — no command needed)*
 
 ```
@@ -88,3 +100,4 @@ coldkey SS58 : 5FNBxB84BGdf5yVh5y2tYsgzwQLLE26evNRMpFfyCnSALGms
 | miner / hotkey7 | 5ChqbcaDqfUAQiiWCd9SHwzKuJSHcqEgba7GKmFsFXqomS7h |
 | miner2 / hotkey1 | 5DyVxaG76XRvS2pwgB8DtoBR7176Gi6owucvJgrSdC1Rb2d3 |
 | miner2 / hotkey2 | 5EBzeWK9Kgx4jsfPXPbfLaHGcRG8bgPsGPLYPnTQxeAp3mYT |
+
