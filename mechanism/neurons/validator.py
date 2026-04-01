@@ -1011,11 +1011,11 @@ class Validator:
         """
         if prompt_votes_data is not None:
             data = prompt_votes_data
-            bt.logging.info(
+            bt.logging.debug(
                 "[platform_read] fetch_prompt_votes source=reused_in_step purpose=prompt_voting_decision"
             )
         else:
-            bt.logging.info(
+            bt.logging.debug(
                 "[platform_read] fetch_prompt_votes source=fresh purpose=prompt_voting_decision"
             )
             data = fetch_prompt_votes(self.platform_api_url)
@@ -1365,7 +1365,7 @@ class Validator:
                 was_pending = self._is_pending_validator
                 self._is_pending_validator = jv_check.get("isPending", False)
                 if was_pending and not self._is_pending_validator:
-                    bt.logging.info(
+                    bt.logging.success(
                         "[pending_gate] ✓ PROMOTED — your validator is now ACTIVE in the quorum. "
                         f"hotkey={hotkey[:8]}... You are now counted toward consensus."
                     )
@@ -1378,7 +1378,7 @@ class Validator:
                     )
                 elif self._is_pending_validator:
                     # Still pending — log current network context so operators know where things stand.
-                    bt.logging.info(
+                    bt.logging.debug(
                         "[pending_gate] ⏳ Still PENDING quorum admission. "
                         f"network phase={cs_check.get('phase', '?')} "
                         f"round={cs_check.get('roundId', 'none')} "
@@ -1414,7 +1414,7 @@ class Validator:
                 prompt_voting_outcome = None
                 if not round_id and phase == "prompt_voting":
                     # One fresh prompt-votes read for deadline gate + completion (no stale snapshot).
-                    bt.logging.info(
+                    bt.logging.debug(
                         "[platform_read] fetch_prompt_votes source=fresh purpose=prompt_voting_step"
                     )
                     pv_data = fetch_prompt_votes(self.platform_api_url)
@@ -1448,7 +1448,7 @@ class Validator:
                             ):
                                 deadline_unix = int(time.time()) + _cadence.PROMPT_VOTING_WINDOW_SEC
                                 if self._is_pending_validator:
-                                    bt.logging.info(
+                                    bt.logging.debug(
                                         "[pending_gate] Skipping prompt_voting deadline set — "
                                         "validator is PENDING quorum admission. "
                                         "An active validator will set the deadline."
