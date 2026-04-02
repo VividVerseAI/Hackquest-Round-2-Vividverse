@@ -297,6 +297,10 @@ class Validator:
         # since step duration can vary. Catching re-pending within 3 min is sufficient
         # because the heartbeat window is 2 hours and normal steps push every ~10s.
         self._last_pending_check_mono: float = 0.0
+        # Last known count of active (non-pending) validators from the platform sync.
+        # Used to detect deadlock: if all validators are pending, the pending gate is
+        # bypassed so finalisation can still proceed.
+        self._active_validator_count: int = 0
         # Time-based prompt_voting heartbeat push while waiting for votes.
         # Ensures the validator registers its heartbeat even before vote thresholds
         # are met — otherwise the heartbeat is never created until a phase transition.
@@ -1110,12 +1114,21 @@ class Validator:
         Callers must NOT fall back to direct push for the same transition.
         """
         if self._is_pending_validator:
-            bt.logging.info(
-                "[pending_gate] Skipping consensus proposal/vote — validator is PENDING "
-                "quorum admission. Will participate once promoted to active at the next "
-                "prompt_voting phase."
-            )
-            return False, "pending_validator_not_in_quorum"
+            if self._active_validator_count == 0:
+                # Deadlock guard: all validators are pending so no active validator can
+                # advance the round. Allow this pending validator to vote so finalisation
+                # can proceed rather than stalling forever.
+                bt.logging.warning(
+                    "[pending_gate] DEADLOCK GUARD — validator is pending but no active "
+                    "validators exist. Allowing consensus vote to unblock finalisation."
+                )
+            else:
+                bt.logging.info(
+                    "[pending_gate] Skipping consensus proposal/vote — validator is PENDING "
+                    "quorum admission. Will participate once promoted to active at the next "
+                    "prompt_voting phase."
+                )
+                return False, "pending_validator_not_in_quorum"
         hotkey = self.wallet.hotkey.ss58_address if self.wallet else None
         if not hotkey:
             return False, "no_validator_hotkey"
@@ -1381,6 +1394,7 @@ class Validator:
                 cs_check = sync_check.get("currentState", {})
                 was_pending = self._is_pending_validator
                 self._is_pending_validator = jv_check.get("isPending", False)
+                self._active_validator_count = av_check.get("count", 0)
                 if was_pending and not self._is_pending_validator:
                     bt.logging.success(
                         "[pending_gate] ✓ PROMOTED — your validator is now ACTIVE in the quorum. "
