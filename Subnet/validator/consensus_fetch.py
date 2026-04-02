@@ -318,6 +318,10 @@ def sync_from_checkpoint_and_propose_or_vote(
         timeout=timeout,
     )
     if not vote_result or not vote_result.get("accepted"):
+        error_msg = (vote_result or {}).get("error", "")
+        if "already confirmed" in error_msg.lower():
+            # Other validator reached quorum first — proposal is confirmed; treat as success.
+            return True, ""
         return False, "vote_rejected"
 
     if vote_result.get("confirmed"):
