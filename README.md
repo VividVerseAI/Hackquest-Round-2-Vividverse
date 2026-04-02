@@ -14,6 +14,13 @@ Vividverse is a Bittensor subnet where AI filmmakers compete each round to produ
 
 ---
 
+> **Note:** If you cloned this repository before 2 April 2026, please delete your local copy and clone again — several validator fixes have been applied since then.
+> ```bash
+> git clone https://github.com/VividVerseAI/Hackquest-Round-2-Vividverse.git
+> ```
+
+---
+
 ## Quick Start
 
 **Requires Docker only.**
@@ -39,11 +46,10 @@ See **[Run & Setup.md](Run%20&%20Setup.md)** for full details — switching vali
 | [mechanism/neurons/validator.py](mechanism/neurons/validator.py) | Validator entry point — phase routing, heartbeat, `set_weights` |
 | [mechanism/docs/ARCHITECTURE_BITTENSOR_PLATFORM.md](mechanism/docs/ARCHITECTURE_BITTENSOR_PLATFORM.md) | How Vividverse uses Bittensor — where it differs from the standard template (no miner axon) |
 | [mechanism/docs/MECHANISM_PLATFORM_BOUNDARY.md](mechanism/docs/MECHANISM_PLATFORM_BOUNDARY.md) | What the validator owns vs what the platform does |
-| `Subnet/` | The `vividverse` Python package — contracts, incentive logic, validator modules |
+| \`Subnet/\` | The \`vividverse\` Python package — contracts, incentive logic, validator modules |
 
 ---
 
 ## How It Works in One Paragraph
 
 Miners register on chain and submit AI-generated video scenes through the platform UI — no local neuron required. Critics (tied to validator accounts) score each submission. The validator runs locally, pushes lifecycle heartbeats to the platform every ~10 seconds to drive round state, and at finalisation fetches the median scores from its critic pool, computes weights using a 70/30 winner/proportional split, and calls `set_weights()` on the Bittensor chain.
-
