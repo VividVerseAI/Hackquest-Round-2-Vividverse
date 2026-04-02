@@ -8,9 +8,9 @@ Vividverse is a Bittensor subnet where AI filmmakers compete each round to produ
 
 **Updated Proposal:** https://generated-daisy-98b.notion.site/ROUND-2-Vividverse-Subnet-Proposal-331975636e1980129830eae1e289ba51?pvs=74
 
-**Architecture Intro:**: https://1drv.ms/v/c/86e178da39acda17/IQCcuJaSgPhMR5bxZgG7QeK5AUSSgNodIvpCTT5S7XBYIko?e=pSuyyB
+**Architecture Intro:** https://1drv.ms/v/c/86e178da39acda17/IQCcuJaSgPhMR5bxZgG7QeK5AUSSgNodIvpCTT5S7XBYIko?e=pSuyyB
 
-**Medium Article:**: https://medium.com/@vividverse/what-happened-to-movie-magic-0f8447240123
+**Medium Article:** https://medium.com/@vividverse/what-happened-to-movie-magic-0f8447240123
 
 ---
 
