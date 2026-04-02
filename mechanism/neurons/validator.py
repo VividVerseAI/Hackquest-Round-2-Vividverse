@@ -211,7 +211,24 @@ class Validator:
 
         # Bittensor objects
         self.wallet = bt.Wallet(config=config)
-        self.subtensor = bt.Subtensor(config=config)
+        # Retry subtensor connection — testnet/mainnet endpoints can transiently 503 on startup.
+        _subtensor_retries = 5
+        _subtensor_delay = 15  # seconds between attempts
+        for _attempt in range(1, _subtensor_retries + 1):
+            try:
+                self.subtensor = bt.Subtensor(config=config)
+                break
+            except Exception as _e:
+                if _attempt < _subtensor_retries:
+                    bt.logging.warning(
+                        f"Subtensor connection attempt {_attempt}/{_subtensor_retries} failed: {_e}. "
+                        f"Retrying in {_subtensor_delay}s..."
+                    )
+                    import time as _time
+                    _time.sleep(_subtensor_delay)
+                else:
+                    bt.logging.error(f"Subtensor connection failed after {_subtensor_retries} attempts: {_e}")
+                    raise
         self.metagraph = self.subtensor.metagraph(config.netuid)
 
         # State management — only finalisation markers need local storage;
