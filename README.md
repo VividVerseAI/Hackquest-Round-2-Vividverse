@@ -12,6 +12,10 @@ Vividverse is a Bittensor subnet where AI filmmakers compete each round to produ
 
 **Medium Article:** https://medium.com/@vividverse/what-happened-to-movie-magic-0f8447240123
 
+**Pitch Video:**: https://www.youtube.com/watch?v=VyI014FRu00&feature=youtu.be
+
+**Demo Video:**: https://www.youtube.com/watch?v=_UDRUKD1prQ
+
 ---
 
 > **Note:** If you cloned this repository before 2 April 2026, please delete your local copy and clone again — several validator fixes have been applied since then.
