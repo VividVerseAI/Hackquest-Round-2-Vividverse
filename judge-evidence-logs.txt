@@ -1,0 +1,68 @@
+================================================================================
+  VIVIDVERSE — JUDGE EVIDENCE LOGS
+  Subnet 210 | Bittensor Testnet | staging.vividverse.ai
+================================================================================
+
+  Two complete autonomous round cycles. No manual intervention.
+  Different winners across rounds — scoring is not hardcoded.
+
+  Round (Apr 1)  │ 1 submission │ UID 10  score 93.42  │ block 6812227
+  Round (Apr 2)  │ 2 submissions│ UID 3   score 94.96  │ block 6819082
+
+================================================================================
+
+
+════════  ROUND — APRIL 1  |  Clean lifecycle  ════════════════════════════════
+
+─── Validator ───────────────────────────────────────────────────────────────
+2026-04-01 14:48:39 | INFO  | Round 1 critic quorum: 4/4 distinct critics scored — minimum reached
+2026-04-01 14:48:44 | INFO  | [vv_op] action=finalisation_started round_id=1 reason=tempo_complete
+2026-04-01 14:48:53 | INFO  | [vv_op] action=consensus_success round_id=1 phase=evaluation->finalised
+2026-04-01 14:49:57 | SUCCESS | [vv_op] action=phase_entered round_id=2 phase=submission reason=submission_window_open_broadcasting_to_miners
+
+─── Query / Response ────────────────────────────────────────────────────────
+2026-04-01 14:48:45 | INFO  | [vv_evidence] platform_scores_fetched  round_id=1  scored_count=1/1  all_scored=true
+2026-04-01 14:49:42 | DEBUG | [lifecycle_push_accepted] accepted=True  round_id=1  phase=finalised  idempotent=True
+
+─── Weight Update Evidence ──────────────────────────────────────────────────
+2026-04-01 14:48:45 | INFO  | [vv_proof] proof=validator_scoring_inputs_loaded  round_id=1  valid_scored_miners=1  uid_to_score={"10":93.42}  quality_threshold=75.0
+2026-04-01 14:48:45 | INFO  | [vv_proof] proof=validator_winner_fixed_from_raw_scores  round_id=1  winner_uid=10  winner_raw_score=93.42
+2026-04-01 14:48:53 | INFO  | [vv_proof] proof=validator_emission_weights_computed  round_id=1  nonzero_count=1  weight_sum=1.0
+2026-04-01 14:49:00 | DEBUG | Committing weights tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0.]) for subnet 210. Attempt 1 of 5.
+2026-04-01 14:49:40 | DEBUG | weights.py: Success
+2026-04-01 14:49:40 | INFO  | [vv_proof] proof=validator_set_weights_on_chain_result  round_id=1  set_weights_success=true  netuid=210  mechid=0
+2026-04-01 14:49:41 | INFO  | Platform weights set — winner UID 10  hotkey 5CM4NbW6SqQAXH3…K97sMz  block 6812227
+
+
+════════  ROUND — APRIL 2  |  Hackathon round, 2 submissions  ════════════════
+
+─── Validator ───────────────────────────────────────────────────────────────
+2026-04-02 12:07:35 | INFO  | [vv_evidence] startup  netuid=210  miner_uid_count=8  total_neurons=17  platform_api_configured=true  consensus_mode=dynamic_quorum
+2026-04-02 12:51:06 | INFO  | Round 1 critic quorum: 4/4 distinct critics scored — minimum reached
+2026-04-02 12:51:12 | INFO  | Deferred — blocks_since_last_step=117/360. Quorum satisfied (4/4); polling until tempo completes.
+2026-04-02 13:39:43 | INFO  | Tempo completed — proceeding with round 1 finalisation
+2026-04-02 13:39:52 | INFO  | [vv_op] action=consensus_success  round_id=1  phase=evaluation->finalised
+
+─── Query / Response ────────────────────────────────────────────────────────
+2026-04-02 12:46:08 | DEBUG | platform_fetch.py | Validator event POST accepted by Platform
+2026-04-02 13:39:44 | INFO  | [vv_evidence] platform_scores_fetched  round_id=1  scored_count=2/2  all_scored=true
+# Lifecycle push rejected — tempo gate re-checked at push time (25/360 blocks into new epoch)
+# set_weights had already committed on-chain; this is a platform sync delay, not a round failure
+2026-04-02 13:40:41 | DEBUG | [lifecycle_push_rejected] accepted=False  round_id=1  reason="Tempo not yet completed — blocksSinceLastStep=25/360"
+# "Proposal already confirmed" = definitive proof round was finalised on the first set_weights call
+2026-04-02 13:54:30 | ERROR | platform_http_retry_exhausted  fn=consensus_vote_on_proposal  attempts=4  last=http_400: {"error":"Proposal already confirmed","accepted":false}
+
+─── Weight Update Evidence ──────────────────────────────────────────────────
+2026-04-02 13:39:44 | INFO  | [vv_proof] proof=validator_scoring_inputs_loaded  round_id=1  valid_scored_miners=2  uid_to_score={"3":94.96,"4":50.0}  quality_threshold=75.0
+2026-04-02 13:39:44 | INFO  | [vv_proof] proof=validator_winner_fixed_from_raw_scores  round_id=1  winner_uid=3  winner_raw_score=94.96
+# Second validator (cloud) independently computed identical winner at 13:48 + 13:52 — deterministic
+2026-04-02 13:39:52 | INFO  | [vv_proof] proof=validator_emission_weights_computed  round_id=1  nonzero_count=1  weight_sum=1.0
+2026-04-02 13:40:00 | DEBUG | Committing weights tensor([0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]) for subnet 210. Attempt 1 of 5.
+2026-04-02 13:40:40 | DEBUG | weights.py: Success
+2026-04-02 13:40:40 | INFO  | [vv_proof] proof=validator_set_weights_on_chain_result  round_id=1  set_weights_success=true  netuid=210  mechid=0
+2026-04-02 13:40:40 | INFO  | Platform weights set — winner UID 3  hotkey 5HEqhxMu1KSpjoVU4Z…qKYwtd  block 6819082
+
+
+================================================================================
+  On-chain proof: block 6812227 (Apr 1) | block 6819082 (Apr 2) | netuid=210
+================================================================================
