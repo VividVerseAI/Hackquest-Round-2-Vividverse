@@ -36,7 +36,7 @@ The Docker image handles everything: installs all dependencies, pre-bakes the te
 login: admin@vividverse.com (fake)
 pw: admin123
 
-Note: Validator account hasthe same ability
+Note: Validator account has the same permissions (for the sake of the demo)
 
 ## Signing In to the Platform
 
