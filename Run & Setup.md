@@ -31,6 +31,11 @@ The Docker image handles everything: installs all dependencies, pre-bakes the te
 
 ---
 
+
+## Admin Account for Clearing and Restarting Rounds:
+login: admin@vividverse.com (fake)
+pw: admin123
+
 ## Signing In to the Platform
 
 The platform uses hotkey-based authentication. Since these are Bittensor wallets (not Polkadot.js/Talisman), use `scripts/sign_challenge.py` to sign in — or import the mnemonic phrases from `mechanism/scripts/testnet_wallets.txt` into Talisman/Polkadot.js directly (these wallets support Substrate).
