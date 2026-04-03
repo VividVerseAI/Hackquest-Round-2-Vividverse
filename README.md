@@ -25,7 +25,7 @@ Vividverse is a Bittensor subnet where AI filmmakers compete each round to produ
 
 ---
 
-Quick note: while the Demo Video didn't showcase the video stitching and the /preview page those are indeed operational; the demo only serves to illistrate the mechanism in operation and lifecycle management.
+Quick note: while the demo video didn't showcase the video stitching (previous round's video appended to the chain of video clips) and the /preview page those are indeed operational; the demo only serves to illistrate the mechanism in operation and lifecycle management.
 
 Also - Hippius S3 storage is also storing video and image assets.
 
