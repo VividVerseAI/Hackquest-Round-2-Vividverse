@@ -27,7 +27,7 @@ Vividverse is a Bittensor subnet where AI filmmakers compete each round to produ
 
 Quick note: while the demo video didn't showcase the video stitching (previous round's video appended to the chain of video clips) and the /preview page those are indeed operational; the demo only serves to illistrate the mechanism in operation and lifecycle management.
 
-In addition - I have had an issue with stakeweight being very low so miners are becoming validators,this is because I cannot add liquidity to my subnet due to what appears to be an issue in testnet with adding liquidity.
+In addition - I have had an issue with stakeweight being very low so miners are becoming validators, this is because I cannot add liquidity to my subnet due to what appears to be an issue in testnet with adding liquidity, since liquidity is low I cannot unstake since slippage is so high.
 
 Also - Hippius S3 storage is also storing video and image assets.
 
