@@ -145,6 +145,14 @@ def vote_on_proposal(
                 if "accepted" not in r:
                     return False, None, "vote: response missing 'accepted' field"
                 return True, r, ""
+            if resp.status_code == 400:
+                try:
+                    r = resp.json()
+                    if isinstance(r, dict) and "already confirmed" in str(r.get("error", "")).lower():
+                        # Proposal was confirmed by another validator — treat as success (no retry).
+                        return True, r, ""
+                except Exception:
+                    pass
             return (
                 False,
                 None,
