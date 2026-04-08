@@ -163,9 +163,9 @@ python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
 | Wallet / Hotkey | Hotkey SS58 |
 |-----------------|-------------|
 | miner / hotkey2 | 5FxrPr1XYJDivpihzPLgCDL6m2ThUMnnsbPrRKBCazcMNB4Z |
-| miner / hotkey4 | 5HEqhxMu1KSpjoVU4ZmR2hEm1GYfcDKhwsRt8iWVW7qKYwtd |
-| miner / hotkey5 | 5CM4NbW6SqQAXH3motBvnoRo2ApbJtCGfmF8yD2YiAK97sMz |
-| miner / hotkey6 | 5EJV4HfTRZcosnBpKsjfhwopdzdzhe19LRhsxZgVHbpU9hwp |
+| miner(Now validator due to stake weight) / hotkey4 | 5HEqhxMu1KSpjoVU4ZmR2hEm1GYfcDKhwsRt8iWVW7qKYwtd |
+| miner(Now validator due to stake weight) / hotkey5 | 5CM4NbW6SqQAXH3motBvnoRo2ApbJtCGfmF8yD2YiAK97sMz |
+| miner(Now validator due to stake weight) / hotkey6 | 5EJV4HfTRZcosnBpKsjfhwopdzdzhe19LRhsxZgVHbpU9hwp |
 | miner / hotkey7 | 5ChqbcaDqfUAQiiWCd9SHwzKuJSHcqEgba7GKmFsFXqomS7h |
 | miner2 / hotkey1 | 5DyVxaG76XRvS2pwgB8DtoBR7176Gi6owucvJgrSdC1Rb2d3 |
 | miner2 / hotkey2 | 5EBzeWK9Kgx4jsfPXPbfLaHGcRG8bgPsGPLYPnTQxeAp3mYT |
