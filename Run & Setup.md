@@ -166,8 +166,8 @@ python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
 | miner(Now validator due to stake weight) / hotkey4 | 5HEqhxMu1KSpjoVU4ZmR2hEm1GYfcDKhwsRt8iWVW7qKYwtd |
 | miner(Now validator due to stake weight) / hotkey5 | 5CM4NbW6SqQAXH3motBvnoRo2ApbJtCGfmF8yD2YiAK97sMz |
 | miner(Now validator due to stake weight) / hotkey6 | 5EJV4HfTRZcosnBpKsjfhwopdzdzhe19LRhsxZgVHbpU9hwp |
+| miner2(Now validator due to stake weight) / hotkey1 | 5DyVxaG76XRvS2pwgB8DtoBR7176Gi6owucvJgrSdC1Rb2d3 |
 | miner / hotkey7 | 5ChqbcaDqfUAQiiWCd9SHwzKuJSHcqEgba7GKmFsFXqomS7h |
-| miner2 / hotkey1 | 5DyVxaG76XRvS2pwgB8DtoBR7176Gi6owucvJgrSdC1Rb2d3 |
 | miner2 / hotkey2 | 5EBzeWK9Kgx4jsfPXPbfLaHGcRG8bgPsGPLYPnTQxeAp3mYT |
 | miner3 / hotkey1 | 5GnX14L24VfWQfjcQ637ZUH9uHCgQWMjgcpWXCGFZ9Czgfuj |
 | miner3 / hotkey3 | 5Cf4Ui7er3RCefzrasSzzAnk8rtotAtydy1DMkGP7f6THdSG |
