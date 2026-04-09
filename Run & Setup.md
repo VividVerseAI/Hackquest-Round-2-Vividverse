@@ -169,7 +169,7 @@ python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
 | miner / hotkey7 | 5ChqbcaDqfUAQiiWCd9SHwzKuJSHcqEgba7GKmFsFXqomS7h |
 | miner2 / hotkey1 | 5DyVxaG76XRvS2pwgB8DtoBR7176Gi6owucvJgrSdC1Rb2d3 |
 | miner2 / hotkey2 | 5EBzeWK9Kgx4jsfPXPbfLaHGcRG8bgPsGPLYPnTQxeAp3mYT |
-| miner3 / hotkey2 | 5GnX14L24VfWQfjcQ637ZUH9uHCgQWMjgcpWXCGFZ9Czgfuj |
-| miner3 / hotkey2 | 5Cf4Ui7er3RCefzrasSzzAnk8rtotAtydy1DMkGP7f6THdSG |
-| miner3 / hotkey2 | 5GziLXAfdZ2KbA8itTedQxjhRcpEv42qJUPh71Knksd4f81V |
+| miner3 / hotkey1 | 5GnX14L24VfWQfjcQ637ZUH9uHCgQWMjgcpWXCGFZ9Czgfuj |
+| miner3 / hotkey3 | 5Cf4Ui7er3RCefzrasSzzAnk8rtotAtydy1DMkGP7f6THdSG |
+| miner3 / hotkey4 | 5GziLXAfdZ2KbA8itTedQxjhRcpEv42qJUPh71Knksd4f81V |
 | miner3 / hotkey2 | 5GEEqbtDN6LFi85WQgCLxXVfN9riAycSwx47N8B88kL4cyT4 |
