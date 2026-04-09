@@ -162,7 +162,7 @@ python3 scripts/sign_challenge.py -m "PASTE_MESSAGE" \
 
 | Wallet / Hotkey | Hotkey SS58 |
 |-----------------|-------------|
-| miner / hotkey2 | 5FxrPr1XYJDivpihzPLgCDL6m2ThUMnnsbPrRKBCazcMNB4Z |
+| miner(Now validator due to stake weight) / hotkey2 | 5FxrPr1XYJDivpihzPLgCDL6m2ThUMnnsbPrRKBCazcMNB4Z |
 | miner(Now validator due to stake weight) / hotkey4 | 5HEqhxMu1KSpjoVU4ZmR2hEm1GYfcDKhwsRt8iWVW7qKYwtd |
 | miner(Now validator due to stake weight) / hotkey5 | 5CM4NbW6SqQAXH3motBvnoRo2ApbJtCGfmF8yD2YiAK97sMz |
 | miner(Now validator due to stake weight) / hotkey6 | 5EJV4HfTRZcosnBpKsjfhwopdzdzhe19LRhsxZgVHbpU9hwp |
