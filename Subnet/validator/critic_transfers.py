@@ -17,13 +17,10 @@ is not blocked and the platform ledger stays in CALCULATED for manual reconcilia
 from __future__ import annotations
 
 import os
-import logging
 from typing import Optional, List, Dict, Any
 
 import requests
 import bittensor as bt
-
-logger = logging.getLogger(__name__)
 
 _DEFAULT_TIMEOUT = int(os.environ.get("PLATFORM_API_TIMEOUT", "60"))
 
@@ -55,15 +52,14 @@ def _unlock_coldkey(wallet: bt.wallet) -> bool:
         "coldkey",
     )
     if not os.path.exists(coldkey_path):
-        logger.warning(
-            "[critic_transfers] coldkey file not found at %s — "
-            "set BT_COLDKEY_JSON_BASE64 in Railway to enable TAO transfers",
-            coldkey_path,
+        bt.logging.warning(
+            f"[critic_transfers] coldkey file not found at {coldkey_path} — "
+            "set BT_COLDKEY_JSON_BASE64 in Railway to enable TAO transfers"
         )
         return False
 
     if not password:
-        logger.warning(
+        bt.logging.warning(
             "[critic_transfers] BT_COLDKEY_PASSWORD not set — "
             "cannot unlock coldkey for critic TAO transfers"
         )
@@ -73,7 +69,7 @@ def _unlock_coldkey(wallet: bt.wallet) -> bool:
         wallet.coldkey_file.decrypt(password)
         return True
     except Exception as e:
-        logger.error("[critic_transfers] Failed to unlock coldkey: %s", e)
+        bt.logging.error(f"[critic_transfers] Failed to unlock coldkey: {e}")
         return False
 
 
@@ -93,13 +89,12 @@ def _fetch_payout_queue(
         if resp.status_code == 200:
             data = resp.json()
             return data.get("queue", [])
-        logger.warning(
-            "[critic_transfers] payout-queue http_%d round=%d: %s",
-            resp.status_code, round_id, resp.text[:200],
+        bt.logging.warning(
+            f"[critic_transfers] payout-queue http_{resp.status_code} round={round_id}: {resp.text[:200]}"
         )
         return None
     except Exception as e:
-        logger.error("[critic_transfers] payout-queue fetch error round=%d: %s", round_id, e)
+        bt.logging.error(f"[critic_transfers] payout-queue fetch error round={round_id}: {e}")
         return None
 
 
@@ -118,13 +113,12 @@ def _confirm_transfers(
         )
         if resp.status_code == 200:
             return True
-        logger.warning(
-            "[critic_transfers] payout-confirm http_%d: %s",
-            resp.status_code, resp.text[:200],
+        bt.logging.warning(
+            f"[critic_transfers] payout-confirm http_{resp.status_code}: {resp.text[:200]}"
         )
         return False
     except Exception as e:
-        logger.error("[critic_transfers] payout-confirm error: %s", e)
+        bt.logging.error(f"[critic_transfers] payout-confirm error: {e}")
         return False
 
 
@@ -145,15 +139,13 @@ def execute_critic_transfers(
 
         queue = _fetch_payout_queue(platform_api_url, round_id)
         if not queue:
-            logger.info(
-                "[critic_transfers] round=%d: payout queue empty or unavailable — no transfers",
-                round_id,
+            bt.logging.info(
+                f"[critic_transfers] round={round_id}: payout queue empty or unavailable — no transfers"
             )
             return
 
-        logger.info(
-            "[critic_transfers] round=%d: executing %d critic transfer(s)",
-            round_id, len(queue),
+        bt.logging.info(
+            f"[critic_transfers] round={round_id}: executing {len(queue)} critic transfer(s)"
         )
 
         results: List[Dict[str, Any]] = []
@@ -163,7 +155,7 @@ def execute_critic_transfers(
             amount = entry.get("rewardAmount")
 
             if not payout_id or not dest or not amount:
-                logger.warning("[critic_transfers] skipping malformed queue entry: %s", entry)
+                bt.logging.warning(f"[critic_transfers] skipping malformed queue entry: {entry}")
                 continue
 
             try:
@@ -175,18 +167,16 @@ def execute_critic_transfers(
                     wait_for_finalization=False,
                 )
                 if success:
-                    logger.info(
-                        "[critic_transfers] round=%d transfer OK: %s TAO → %s",
-                        round_id, amount, dest,
+                    bt.logging.success(
+                        f"[critic_transfers] round={round_id} transfer OK: {amount} TAO → {dest}"
                     )
                     results.append({
                         "criticPayoutId": payout_id,
                         "status": "paid",
                     })
                 else:
-                    logger.warning(
-                        "[critic_transfers] round=%d transfer FAILED: %s TAO → %s",
-                        round_id, amount, dest,
+                    bt.logging.warning(
+                        f"[critic_transfers] round={round_id} transfer FAILED: {amount} TAO → {dest}"
                     )
                     results.append({
                         "criticPayoutId": payout_id,
@@ -194,9 +184,8 @@ def execute_critic_transfers(
                         "failureReason": "subtensor.transfer returned False",
                     })
             except Exception as transfer_err:
-                logger.error(
-                    "[critic_transfers] round=%d exception transferring to %s: %s",
-                    round_id, dest, transfer_err,
+                bt.logging.error(
+                    f"[critic_transfers] round={round_id} exception transferring to {dest}: {transfer_err}"
                 )
                 results.append({
                     "criticPayoutId": payout_id,
@@ -208,10 +197,14 @@ def execute_critic_transfers(
             _confirm_transfers(platform_api_url, results)
             paid = sum(1 for r in results if r["status"] == "paid")
             failed = sum(1 for r in results if r["status"] == "failed")
-            logger.info(
-                "[critic_transfers] round=%d complete: %d paid, %d failed",
-                round_id, paid, failed,
-            )
+            if failed == 0:
+                bt.logging.success(
+                    f"[critic_transfers] round={round_id} complete: {paid} paid, 0 failed"
+                )
+            else:
+                bt.logging.warning(
+                    f"[critic_transfers] round={round_id} complete: {paid} paid, {failed} failed"
+                )
 
     except Exception as e:
-        logger.error("[critic_transfers] unexpected error round=%d: %s", round_id, e)
+        bt.logging.error(f"[critic_transfers] unexpected error round={round_id}: {e}")
