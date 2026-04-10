@@ -369,46 +369,95 @@ async def finalise_round_platform(v: "Validator", round_mgr: Dict[str, Any]) -> 
     )
 
     # All-below-threshold → restart
+    # When running in per_validator score mode, this validator's critics may all be below
+    # threshold while another validator's critics scored a miner above it.  Before committing
+    # to a restart, cross-check against the global aggregate scores (fetched without a
+    # validator hotkey).  Only restart if the global view *also* shows all scores below
+    # threshold — i.e. no validator across the whole network has a score >= QUALITY_THRESHOLD.
     if all(s < QUALITY_THRESHOLD for s in scores.values()):
-        bt.logging.info(f"All scores below threshold ({QUALITY_THRESHOLD}) — pushing restart")
-        log_evidence(
-            "validator", "lifecycle_transition",
-            round_id=round_id, phase="evaluation",
-            action="restart_low_scores",
-            reason=f"all_below_quality_threshold threshold={QUALITY_THRESHOLD}",
-            validator_hotkey=v._validator_hotkey(),
-        )
-        sub_unix, eval_unix = compute_round_deadlines()
-        restart_payload = {
-            "restartDecision": {
-                "restarted": True,
-                "reason": "All scores below quality threshold",
-                "submissionDeadlineUnix": sub_unix,
-                "evaluationDeadlineUnix": eval_unix,
-            },
-            "roundBootstrap": {"submissionDeadlineUnix": sub_unix, "evaluationDeadlineUnix": eval_unix},
-        }
-        ok, cons_reason = await v._push_transition_via_consensus(
-            "evaluation", "submission", round_id, restart_payload
-        )
-        if ok:
-            v._log_consensus_success("evaluation", "submission", round_id)
-            log_vv_info(
-                "restart",
-                round_id=round_id, phase="evaluation->submission",
+        _should_restart = True
+        if score_mode == "per_validator":
+            bt.logging.info(
+                f"[finalise] Per-validator scores all below threshold ({QUALITY_THRESHOLD}) "
+                "— fetching global aggregate to confirm restart decision"
+            )
+            global_result = fetch_platform_scores_extended(
+                v.platform_api_url, round_id, validator_hotkey=None
+            )
+            if global_result and isinstance(global_result, tuple) and len(global_result) == 3:
+                global_scores_raw, _, _global_meta = global_result
+                global_scores: Dict[int, float] = {
+                    hotkey_to_uid[hk]: float(raw)
+                    for hk, raw in global_scores_raw.items()
+                    if hk in hotkey_to_uid
+                }
+                if any(s >= QUALITY_THRESHOLD for s in global_scores.values()):
+                    bt.logging.info(
+                        f"[finalise] Global aggregate has score(s) >= {QUALITY_THRESHOLD} "
+                        "— skipping restart; proceeding with weight-setting using per-validator scores"
+                    )
+                    log_evidence(
+                        "validator", "lifecycle_transition",
+                        round_id=round_id, phase="evaluation",
+                        action="restart_suppressed_by_global_scores",
+                        reason=(
+                            f"per_validator_all_below threshold={QUALITY_THRESHOLD} "
+                            "but global_aggregate_has_passing_score"
+                        ),
+                        validator_hotkey=v._validator_hotkey(),
+                    )
+                    _should_restart = False
+                else:
+                    bt.logging.info(
+                        f"[finalise] Global aggregate also all below threshold ({QUALITY_THRESHOLD}) "
+                        "— restart confirmed"
+                    )
+            else:
+                bt.logging.warning(
+                    "[finalise] Could not fetch global aggregate scores to confirm restart — "
+                    "proceeding with restart based on per-validator scores alone"
+                )
+
+        if _should_restart:
+            bt.logging.info(f"All scores below threshold ({QUALITY_THRESHOLD}) — pushing restart")
+            log_evidence(
+                "validator", "lifecycle_transition",
+                round_id=round_id, phase="evaluation",
+                action="restart_low_scores",
+                reason=f"all_below_quality_threshold threshold={QUALITY_THRESHOLD}",
                 validator_hotkey=v._validator_hotkey(),
-                reason=f"all_scores_below_threshold threshold={QUALITY_THRESHOLD} path=consensus",
             )
-            v._emit_validator_event(
-                EVENT_RESTART, round_id,
-                {"reason": "all_scores_below_quality_threshold", "path": "consensus",
-                 "quality_threshold": QUALITY_THRESHOLD},
+            sub_unix, eval_unix = compute_round_deadlines()
+            restart_payload = {
+                "restartDecision": {
+                    "restarted": True,
+                    "reason": "All scores below quality threshold",
+                    "submissionDeadlineUnix": sub_unix,
+                    "evaluationDeadlineUnix": eval_unix,
+                },
+                "roundBootstrap": {"submissionDeadlineUnix": sub_unix, "evaluationDeadlineUnix": eval_unix},
+            }
+            ok, cons_reason = await v._push_transition_via_consensus(
+                "evaluation", "submission", round_id, restart_payload
             )
-        else:
-            v._log_consensus_failure("evaluation", "submission", round_id, cons_reason)
-            v._liveness_note("consensus_retry_next_loop", round_id=round_id, phase="evaluation")
-        v._platform_round_cache = None
-        return
+            if ok:
+                v._log_consensus_success("evaluation", "submission", round_id)
+                log_vv_info(
+                    "restart",
+                    round_id=round_id, phase="evaluation->submission",
+                    validator_hotkey=v._validator_hotkey(),
+                    reason=f"all_scores_below_threshold threshold={QUALITY_THRESHOLD} path=consensus",
+                )
+                v._emit_validator_event(
+                    EVENT_RESTART, round_id,
+                    {"reason": "all_scores_below_quality_threshold", "path": "consensus",
+                     "quality_threshold": QUALITY_THRESHOLD},
+                )
+            else:
+                v._log_consensus_failure("evaluation", "submission", round_id, cons_reason)
+                v._liveness_note("consensus_retry_next_loop", round_id=round_id, phase="evaluation")
+            v._platform_round_cache = None
+            return
 
     # Pre-validate all score UIDs are within metagraph bounds before selecting winner.
     n_hotkeys = len(all_hotkeys)
